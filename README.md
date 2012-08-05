@@ -1,4 +1,4 @@
-# Siggoscript
+# SiggoScript
 
 ```javascript
 ({}+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]
