@@ -1,0 +1,253 @@
+// -*- mode: javascript; fill-column: 80; -*-
+
+// Compiler directives:
+
+// _S  : coerce to string
+// _N  : coerce to number
+// _B  : coerce to boolean
+// ;   : end declaration or statement
+// let : compiler declaration
+
+// Built-in syntax:
+
+// [] : unary array constructor or object dereference
+// () : grouping or function/method call
+// +  : numeric addition or coercion to number (NOT string concatenation)
+// !  : negation (with implicit coercion to boolean)
+// {} : empty object literal
+
+// References:
+
+// http://discogscounter.getfreehosting.co.uk/js-noalnum.php
+// http://patriciopalladino.com/blog/2012/08/09/non-alphanumeric-javascript.html
+
+
+// -----------------------------------------------------------------------------
+// BIG BANG: let there be truth.
+// -----------------------------------------------------------------------------
+
+let false = ![],
+    true = !false;
+
+let 0 = _N(false),
+    1 = _N(true),
+    2 = 1+1,
+    3 = 2+1,
+    4 = 3+1,
+    5 = 4+1,
+    6 = 5+1,
+    7 = 6+1,
+    8 = 7+1,
+    9 = 8+1;
+
+let "0" = _S(0),
+    "1" = _S(1),
+    "2" = _S(2),
+    "3" = _S(3),
+    "4" = _S(4),
+    "5" = _S(5),
+    "6" = _S(6),
+    "7" = _S(7),
+    "8" = _S(8),
+    "9" = _S(9);
+
+let "" = _S([]);
+
+let undefined = [][""];
+
+let NaN = _N([false]);
+
+let "e" = _S(true)[3],
+    "n" = _S(undefined)[1],
+    "d" = _S(undefined)[2],
+    "f" = _S(false)[0],
+    "a" = _S(false)[1],
+    "l" = _S(false)[2],
+    "s" = _S(false)[3],
+    "t" = _S(true)[0],
+    "r" = _S(true)[1],
+    "u" = _S(undefined)[0];
+
+let "o" = _S({})[1],
+    "b" = _S({})[2],
+    "j" = _S({})[3],
+    "c" = _S({})[5],
+    "O" = _S({})[8],
+    " " = _S({})[7];
+
+let "N" = _S(NaN)[0];
+
+let Infinity = _N("1e1000");
+
+let "I" = _S(Infinity)[0],
+    "i" = _S(Infinity)[3],
+    "y" = _S(Infinity)[7];
+
+let String = _S(true).constructor,
+    Number = (0).constructor,
+    Function = [].constructor.constructor,
+    Array = [].constructor;
+
+let "+" = _S(_N("1e21"))[2],
+    "[" = _S({})[0],
+    "]" = _S({})[14];
+
+let isNaN = Function("return isNaN")();
+
+// The filter removes all whitespace (which isNaN thinks is a number), resulting in:
+// 
+//     ["f", "u", "n", "c", "t", "i", "o", "n", "N", "u", "m", "b", "e", "r", ...]
+//     ["f", "u", "n", "c", "t", "i", "o", "n", "S", "t", "r", "i", "n", "g", ...]
+
+let "m" = [].slice.call(_S(Number)).filter(Function("return isNaN")())[10],
+    "S" = [].slice.call(_S(String)).filter(Function("return isNaN")())[8],
+    "g" = [].slice.call(_S(String)).filter(Function("return isNaN")())[13];
+
+// ECMAScript doesn't mandate radices greater than 10, but it does require that they
+// use lowercase letters and give proper answers if they give any answer at all. And
+// web compatibility seems to require it, so it's portable.
+
+let global(x) = (Function(`return ${x}`))();
+
+let "p" = (25).toString(26),
+    "h" = (17).toString(18);
+
+let escape = global("escape"),
+    unescape = global("unescape");
+
+let "%" = escape(" ")[0];
+
+let "." = unescape("%2e"),
+    "=" = unescape("%3d");
+    
+// -----------------------------------------------------------------------------
+// BOOTSTRAP 1. Most expensive common characters.
+// -----------------------------------------------------------------------------
+
+let install(x, v) = Function(`this.${x}=arguments[0]`).bind(Array.prototype)(v);
+
+install("a", ".");
+
+let "." = [].a;
+
+install("b", "=");
+
+let "=" = [].b;
+
+install("c", "p");
+
+let "p" = [].c;
+
+install("d", "h");
+
+let "h" = [].d;
+
+// -----------------------------------------------------------------------------
+// BOOTSTRAP 2. Most common identifiers.
+// -----------------------------------------------------------------------------
+
+install("e", "constructor");
+
+let "constructor" = [].e;
+
+install("f", "prototype");
+
+let "prototype" = [].f;
+
+install("i", "arguments");
+
+let "arguments" = [].i;
+
+install("j", "toString");
+
+let "toString" = [].j;
+
+// -----------------------------------------------------------------------------
+// BOOTSTRAP 3. Most common functions.
+// -----------------------------------------------------------------------------
+
+install("n", Function);
+
+let Function = [].n;
+
+install("o", unescape);
+
+let unescape = [].o;
+
+install("t", escape);
+
+let escape = [].t;
+
+// -----------------------------------------------------------------------------
+// BOOTSTRAP 4. Alphabets. Starting to get more organized now.
+// -----------------------------------------------------------------------------
+
+let "k" = (20).toString(21),
+    "q" = (26).toString(27),
+    "v" = (31).toString(32),
+    "w" = (32).toString(33),
+    "x" = (33).toString(34),
+    "z" = (35).toString(36);
+
+install("l", "abcdefghijklmnopqrstuvwxyz");
+
+let "k" = [].l[10],
+    "q" = [].l[16],
+    "v" = [].l[21],
+    "w" = [].l[22],
+    "x" = [].l[23],
+    "z" = [].l[25];
+
+let "U" = unescape("%55"),
+    "C" = unescape("%43");
+
+install("u", [].l.toUpperCase());
+
+install("j", "push");
+
+// Keywords
+
+install("r", []);
+
+[].r.push("while");
+[].r.push("return");
+[].r.push("this");
+[].r.push("if");
+[].r.push("null");
+[].r.push("else");
+[].r.push("break");
+[].r.push("function");
+
+// Sigils
+
+install("s", []);
+
+let "(" = unescape("%28"),
+    ")" = unescape("%29"),
+    "{" = unescape("%7b"),
+    "}" = unescape("%7d"),
+    "," = unescape("%2c"),
+    ";" = unescape("%3b"),
+    "<" = unescape("%3c"),
+    ">" = unescape("%3e"),
+    "-" = unescape("%2d"),
+    "!" = unescape("%21");
+
+[].s.push("(");
+[].s.push(")");
+[].s.push("[");
+[].s.push("]");
+[].s.push("{");
+[].s.push("}");
+[].s.push(",");
+[].s.push(";");
+[].s.push("=");
+[].s.push("==");
+[].s.push("===");
+[].s.push("<");
+[].s.push(">");
+[].s.push("+");
+[].s.push("-");
+[].s.push("++");
+[].s.push("--");
+[].s.push("!");
