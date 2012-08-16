@@ -53,37 +53,44 @@ let "0" = _S(0),
 
 let "" = _S([]);
 
-let undefined = [][""];
+let undefined = [][false];
 
 let NaN = _N([false]);
 
-let "e" = _S(true)[3],
-    "n" = _S(undefined)[1],
-    "d" = _S(undefined)[2],
-    "f" = _S(false)[0],
-    "a" = _S(false)[1],
-    "l" = _S(false)[2],
-    "s" = _S(false)[3],
-    "t" = _S(true)[0],
-    "r" = _S(true)[1],
-    "u" = _S(undefined)[0];
+let "true" = _S(true),
+    "false" = _S(false),
+    "undefined" = _S(undefined),
+    "NaN" = _S(NaN);
+
+let "t" = "true"[0],
+    "r" = "true"[1],
+    "e" = "true"[3];
+
+let "f" = "false"[0],
+    "a" = "false"[1],
+    "l" = "false"[2],
+    "s" = "false"[3];
+
+let "u" = "undefined"[0],
+    "n" = "undefined"[1],
+    "d" = "undefined"[2],
+    "i" = "undefined"[5];
 
 let "o" = _S({})[1],
     "b" = _S({})[2],
     "j" = _S({})[3],
     "c" = _S({})[5],
-    "O" = _S({})[8],
-    " " = _S({})[7];
+    " " = _S({})[7],
+    "O" = _S({})[8];
 
-let "N" = _S(NaN)[0];
+let "N" = "NaN"[0];
 
 let Infinity = _N("1e1000");
 
 let "I" = _S(Infinity)[0],
-    "i" = _S(Infinity)[3],
     "y" = _S(Infinity)[7];
 
-let String = _S(true).constructor,
+let String = "true".constructor,
     Number = (0).constructor,
     Function = [].constructor.constructor,
     Array = [].constructor;
@@ -92,16 +99,20 @@ let "+" = _S(_N("1e21"))[2],
     "[" = _S({})[0],
     "]" = _S({})[14];
 
-let isNaN = Function("return isNaN")();
+// FIXME: optimizations
+// - concatenate things at high-low-digit offsets to get them to low-digit offsets
+
+
+let isNaN = Function(`return is${NaN}`)();
 
 // The filter removes all whitespace (which isNaN thinks is a number), resulting in:
 // 
 //     ["f", "u", "n", "c", "t", "i", "o", "n", "N", "u", "m", "b", "e", "r", ...]
 //     ["f", "u", "n", "c", "t", "i", "o", "n", "S", "t", "r", "i", "n", "g", ...]
 
-let "m" = [].slice.call(_S(Number)).filter(Function("return isNaN")())[10],
-    "S" = [].slice.call(_S(String)).filter(Function("return isNaN")())[8],
-    "g" = [].slice.call(_S(String)).filter(Function("return isNaN")())[13];
+let "m" = [].slice.call(_S(Number)).filter(isNaN)[10],
+    "S" = [].slice.call(_S(String)).filter(isNaN)[8],
+    "g" = [].slice.call(_S(String)).filter(isNaN)[13];
 
 // ECMAScript doesn't mandate radices greater than 10, but it does require that they
 // use lowercase letters and give proper answers if they give any answer at all. And
@@ -121,62 +132,80 @@ let "." = unescape("%2e"),
     "=" = unescape("%3d");
     
 // -----------------------------------------------------------------------------
-// BOOTSTRAP 1. Most expensive common characters.
+// BOOTSTRAP 1. Create scratch space with most expensive common characters.
 // -----------------------------------------------------------------------------
 
-let install(x, v) = Function(`this.${x}=arguments[0]`).bind(Array.prototype)(v);
+// Cheapest non-index names (in order from cheapest to most expensive):
 
-install("a", ".");
+// ""
+// "false"      - "constructor"
+// "true"       - "prototype"
+// "NaN"        - "toString"
+// "undefined"  - Function
+// "["
+// "o"          - unescape
+// "f"          - escape
+// "a"          - (lowercase alphabet)
+// "t"          - (uppercase alphabet)
+// "r"          - "push"
+// "u"          - (keywords)
+// "n"          - (sigils)
+// "b"
+// "l"
+// "d"
 
-let "." = [].a;
+// Cheapest indices:
 
-install("b", "=");
+// "0"
+// "1"
+// "10"
+// "11"
+// "20"
 
-let "=" = [].b;
+Function("this[[]]=arguments[0]").bind(Array.prototype)(["."].concat("=").concat("h").concat("m").concat("p").concat("g"));
 
-install("c", "p");
+let scratch = [][""];
 
-let "p" = [].c;
+let "." = scratch[0],
+    "=" = scratch[1],
+    "h" = scratch[2],
+    "m" = scratch[3],
+    "p" = scratch[4],
+    "g" = scratch[5];
 
-install("d", "h");
-
-let "h" = [].d;
+let install(x, v) = Function(`this.${x}=arguments[0]`).bind(scratch)(v);
 
 // -----------------------------------------------------------------------------
 // BOOTSTRAP 2. Most common identifiers.
 // -----------------------------------------------------------------------------
 
-install("e", "constructor");
+install(false, "constructor");
 
-let "constructor" = [].e;
+let "constructor" = scratch[false];
 
-install("f", "prototype");
+install(true, "prototype");
 
-let "prototype" = [].f;
+let "prototype" = scratch[true];
 
-install("i", "arguments");
+install(NaN, "toString");
 
-let "arguments" = [].i;
-
-install("j", "toString");
-
-let "toString" = [].j;
+let "toString" = scratch[NaN];
 
 // -----------------------------------------------------------------------------
 // BOOTSTRAP 3. Most common functions.
 // -----------------------------------------------------------------------------
 
-install("n", Function);
+install(undefined, Function);
 
-let Function = [].n;
+let Function = scratch[undefined];
 
 install("o", unescape);
 
-let unescape = [].o;
+let unescape = scratch.o;
 
-install("t", escape);
+install("f", escape);
 
-let escape = [].t;
+let escape = scratch.f;
 
 // -----------------------------------------------------------------------------
 // BOOTSTRAP 4. Alphabets. Starting to get more organized now.
@@ -189,38 +218,40 @@ let "k" = (20).toString(21),
     "x" = (33).toString(34),
     "z" = (35).toString(36);
 
-install("l", "abcdefghijklmnopqrstuvwxyz");
+install("a", "abcdefghijklmnopqrstuvwxyz");
 
-let "k" = [].l[10],
-    "q" = [].l[16],
-    "v" = [].l[21],
-    "w" = [].l[22],
-    "x" = [].l[23],
-    "z" = [].l[25];
+let "k" = scratch.a[10],
+    "q" = scratch.a[16],
+    "v" = scratch.a[21],
+    "w" = scratch.a[22],
+    "x" = scratch.a[23],
+    "z" = scratch.a[25];
 
 let "U" = unescape("%55"),
     "C" = unescape("%43");
 
-install("u", [].l.toUpperCase());
+install("t", scratch.a.toUpperCase());
 
-install("j", "push");
+install("r", "push");
 
 // Keywords
 
-install("r", []);
+install("u", []);
 
-[].r.push("while");
-[].r.push("return");
-[].r.push("this");
-[].r.push("if");
-[].r.push("null");
-[].r.push("else");
-[].r.push("break");
-[].r.push("function");
+scratch.u.push("while");
+scratch.u.push("return");
+scratch.u.push("this");
+scratch.u.push("if");
+scratch.u.push("null");
+scratch.u.push("else");
+scratch.u.push("break");
+scratch.u.push("function");
 
 // Sigils
 
-install("s", []);
+// install("s", []);
+
+install("n", []);
 
 let "(" = unescape("%28"),
     ")" = unescape("%29"),
@@ -233,21 +264,21 @@ let "(" = unescape("%28"),
     "-" = unescape("%2d"),
     "!" = unescape("%21");
 
-[].s.push("(");
-[].s.push(")");
-[].s.push("[");
-[].s.push("]");
-[].s.push("{");
-[].s.push("}");
-[].s.push(",");
-[].s.push(";");
-[].s.push("=");
-[].s.push("==");
-[].s.push("===");
-[].s.push("<");
-[].s.push(">");
-[].s.push("+");
-[].s.push("-");
-[].s.push("++");
-[].s.push("--");
-[].s.push("!");
+scratch.n.push("(");
+scratch.n.push(")");
+scratch.n.push("[");
+scratch.n.push("]");
+scratch.n.push("{");
+scratch.n.push("}");
+scratch.n.push(",");
+scratch.n.push(";");
+scratch.n.push("=");
+scratch.n.push("==");
+scratch.n.push("===");
+scratch.n.push("<");
+scratch.n.push(">");
+scratch.n.push("+");
+scratch.n.push("-");
+scratch.n.push("++");
+scratch.n.push("--");
+scratch.n.push("!");
