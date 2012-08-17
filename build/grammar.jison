@@ -10,7 +10,6 @@ nl                                                               "\n"
 {slash}{slash}[^\n]*                                             /* skip comments */
 (?:[0]|(?:[1-9][0-9]*("."[0-9]+)?))                              return 'NUMBER';
 \"(?:{esc}["bfnrt/{esc}]|{esc}"u"[a-fA-F0-9]{4}|[^"{esc}])*\"    yytext = yytext.substr(1,yyleng-2); return 'STRING';
-"`"(?:{esc}["bfnrt/{esc}]|{esc}"u"[a-fA-F0-9]{4}|[^`{esc}])*"`"  yytext = yytext.substr(1,yyleng-2); return 'TEMPLATE';
 "false"                                                          return 'BOOLEAN';
 "true"                                                           return 'BOOLEAN';
 "null"                                                           return 'NULL';
@@ -19,6 +18,7 @@ nl                                                               "\n"
 "let"                                                            return 'LET';
 [a-zA-Z_]+                                                       return 'IDENT';
 "+"                                                              return '+';
+"~"                                                              return '~';
 "!"                                                              return '!';
 "="                                                              return '=';
 \[                                                               return '[';
@@ -90,8 +90,6 @@ lval
           {$$ = { tag: 'number', loc: @$, source: $1, value: +$1 };}
     | STRING
           {$$ = { tag: 'string', loc: @$, source: $1, value: $1 };}
-    | TEMPLATE
-          {$$ = { tag: 'template', loc: @$, source: $1 };}
     | ident
           {$$ = $1;}
     ;
@@ -162,4 +160,12 @@ expr
           {$$ = $1;}
     | expr '+' unexpr
           {$$ = { tag: 'plus', loc: @$, left: $1, right: $3 };}
+    | expr '~' unexpr
+          {if ($1.tag === 'cat') {
+               $$ = $1;
+               $$.elts.push($3);
+               $$.loc = @$;
+           } else {
+               $$ = { tag: 'cat', loc: @$, elts: [$1, $3] };
+           }}
     ;

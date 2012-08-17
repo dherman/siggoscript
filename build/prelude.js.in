@@ -88,7 +88,7 @@ let "N" = "NaN"[0];
 let Infinity = _N("1e1000");
 
 let "I" = _S(Infinity)[0],
-    "y" = _S(Infinity)[7];
+    "y" = _S(NaN~Infinity)[10];
 
 let String = "true".constructor,
     Number = (0).constructor,
@@ -103,7 +103,7 @@ let "+" = _S(_N("1e21"))[2],
 // - concatenate things at high-low-digit offsets to get them to low-digit offsets
 
 
-let isNaN = Function(`return is${NaN}`)();
+let isNaN = Function("return is"~NaN)();
 
 // The filter removes all whitespace (which isNaN thinks is a number), resulting in:
 // 
@@ -111,17 +111,17 @@ let isNaN = Function(`return is${NaN}`)();
 //     ["f", "u", "n", "c", "t", "i", "o", "n", "S", "t", "r", "i", "n", "g", ...]
 
 let "m" = [].slice.call(_S(Number)).filter(isNaN)[10],
-    "S" = [].slice.call(_S(String)).filter(isNaN)[8],
+    "S" = [].slice.call(_S(NaN)~_S(String)).filter(isNaN)[11],
     "g" = [].slice.call(_S(String)).filter(isNaN)[13];
 
 // ECMAScript doesn't mandate radices greater than 10, but it does require that they
 // use lowercase letters and give proper answers if they give any answer at all. And
 // web compatibility seems to require it, so it's portable.
 
-let global(x) = (Function(`return ${x}`))();
+let global(x) = (Function("return "~x))();
 
-let "p" = (25).toString(26),
-    "h" = (17).toString(18);
+let "p" = (25).toString(30),
+    "h" = (17).toString(20);
 
 let escape = global("escape"),
     unescape = global("unescape");
@@ -173,7 +173,7 @@ let "." = scratch[0],
     "p" = scratch[4],
     "g" = scratch[5];
 
-let install(x, v) = Function(`this.${x}=arguments[0]`).bind(scratch)(v);
+let install(x, v) = Function("this."~x~"=arguments[0]").bind(scratch)(v);
 
 // -----------------------------------------------------------------------------
 // BOOTSTRAP 2. Most common identifiers.
@@ -212,7 +212,7 @@ let escape = scratch.f;
 // -----------------------------------------------------------------------------
 
 let "k" = (20).toString(21),
-    "q" = (26).toString(27),
+    "q" = (26).toString(30),
     "v" = (31).toString(32),
     "w" = (32).toString(33),
     "x" = (33).toString(34),

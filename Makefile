@@ -1,7 +1,9 @@
+PRELUDE_COMPILER=build/parser.js build/ir.js build/env.js build/macro.js build/trans.js build/emit.js build/compile.js build/build.js
+
 all: prelude.js
 
-build/pre.parser.js: build/pre.jison
-	jison -o build/pre.parser.js build/pre.jison
+build/parser.js: build/grammar.jison
+	jison -o build/parser.js build/grammar.jison
 
-prelude.js: build/pre.parser.js build/build.js build/pre.js build/prelude.pre
-	node build/build.js build/prelude.pre > prelude.js
+prelude.js: build/prelude.js.in $(PRELUDE_COMPILER)
+	node build/build.js build/prelude.js.in > prelude.js

@@ -1,5 +1,15 @@
-var pre = require('./pre.js'),
+var compile = require('./compile.js'),
     fs = require('fs');
+
+if (process.argv.length < 3) {
+    console.log("usage: node build.js infile");
+    console.log("  infile  prelude generation script");
+    process.exit();
+}
+
+var infile = fs.readFileSync(process.argv[2], 'utf8');
+
+compile(infile, process.stdout);
 
 // function test() {
 // }
@@ -30,13 +40,3 @@ var pre = require('./pre.js'),
 // test("Infinity", "!(+(+!![]+(!![]+[])[!![]+!![]+!![]]+(+!![])+(+![])+(+![])+(+![])))");
 // test("\"I\"", "!((+(+!![]+(!![]+[])[!![]+!![]+!![]]+(+!![])+(+![])+(+![])+(+![]))+[])[+![]])");
 // test("\"Ireland\"", "!((+(+!![]+(!![]+[])[!![]+!![]+!![]]+(+!![])+(+![])+(+![])+(+![]))+[])[+![]]+(!![]+[])[+!![]]+(!![]+[])[!![]+!![]+!![]]+(![]+[])[!![]+!![]]+(![]+[])[+!![]]+([][[]]+[])[+!![]]+([][[]]+[])[!![]+!![]])");
-
-if (process.argv.length < 3) {
-    console.log("usage: node build.js infile");
-    console.log("  infile  prelude generation script");
-    process.exit();
-}
-
-var infile = fs.readFileSync(process.argv[2], 'utf8');
-
-pre(infile, process.stdout);
