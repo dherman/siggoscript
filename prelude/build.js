@@ -1,5 +1,5 @@
-var compile = require('./compile.js'),
-    fs = require('fs');
+var compile = require('./compile.js');
+var fs = require('fs');
 
 if (process.argv.length < 3) {
     console.log("usage: node build.js infile");

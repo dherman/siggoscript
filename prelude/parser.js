@@ -1,5 +1,5 @@
 /* Jison generated parser */
-var pre = (function(){
+var pre = ((() => {
 
 var parser = {trace: function trace() { },
 yy: {},
@@ -102,7 +102,17 @@ parseError: function parseError(str, hash) {
     throw new Error(str);
 },
 parse: function parse(input) {
-    var self = this, stack = [0], vstack = [null], lstack = [], table = this.table, yytext = "", yylineno = 0, yyleng = 0, recovering = 0, TERROR = 2, EOF = 1;
+    var self = this;
+    var stack = [0];
+    var vstack = [null];
+    var lstack = [];
+    var table = this.table;
+    var yytext = "";
+    var yylineno = 0;
+    var yyleng = 0;
+    var recovering = 0;
+    var TERROR = 2;
+    var EOF = 1;
     this.lexer.setInput(input);
     this.lexer.yy = this.yy;
     this.yy.lexer = this.lexer;
@@ -125,7 +135,17 @@ parse: function parse(input) {
         }
         return token;
     }
-    var symbol, preErrorSymbol, state, action, a, r, yyval = {}, p, len, newState, expected;
+    var symbol;
+    var preErrorSymbol;
+    var state;
+    var action;
+    var a;
+    var r;
+    var yyval = {};
+    var p;
+    var len;
+    var newState;
+    var expected;
     while (true) {
         state = stack[stack.length - 1];
         if (this.defaultActions[state]) {
@@ -148,7 +168,7 @@ parse: function parse(input) {
                 } else {
                     errStr = "Parse error on line " + (yylineno + 1) + ": Unexpected " + (symbol == 1?"end of input":"'" + (this.terminals_[symbol] || symbol) + "'");
                 }
-                this.parseError(errStr, {text: this.lexer.match, token: this.terminals_[symbol] || symbol, line: this.lexer.yylineno, loc: yyloc, expected: expected});
+                this.parseError(errStr, {text: this.lexer.match, token: this.terminals_[symbol] || symbol, line: this.lexer.yylineno, loc: yyloc, expected});
             }
         }
         if (action[0] instanceof Array && action.length > 1) {
@@ -199,7 +219,7 @@ parse: function parse(input) {
     return true;
 }
 };/* Jison generated lexer */
-var lexer = (function(){
+var lexer = ((() => {
 
 var lexer = ({EOF:1,
 parseError:function parseError(str, hash) {
@@ -209,7 +229,7 @@ parseError:function parseError(str, hash) {
             throw new Error(str);
         }
     },
-setInput:function (input) {
+setInput(input) {
         this._input = input;
         this._more = this._less = this.done = false;
         this.yylineno = this.yyleng = 0;
@@ -218,7 +238,7 @@ setInput:function (input) {
         this.yylloc = {first_line:1,first_column:0,last_line:1,last_column:0};
         return this;
     },
-input:function () {
+input() {
         var ch = this._input[0];
         this.yytext+=ch;
         this.yyleng++;
@@ -229,73 +249,73 @@ input:function () {
         this._input = this._input.slice(1);
         return ch;
     },
-unput:function (ch) {
+unput(ch) {
         this._input = ch + this._input;
         return this;
     },
-more:function () {
+more() {
         this._more = true;
         return this;
     },
-pastInput:function () {
+pastInput() {
         var past = this.matched.substr(0, this.matched.length - this.match.length);
         return (past.length > 20 ? '...':'') + past.substr(-20).replace(/\n/g, "");
     },
-upcomingInput:function () {
+upcomingInput() {
         var next = this.match;
         if (next.length < 20) {
             next += this._input.substr(0, 20-next.length);
         }
         return (next.substr(0,20)+(next.length > 20 ? '...':'')).replace(/\n/g, "");
     },
-showPosition:function () {
+showPosition() {
         var pre = this.pastInput();
         var c = new Array(pre.length + 1).join("-");
         return pre + this.upcomingInput() + "\n" + c+"^";
     },
-next:function () {
-        if (this.done) {
-            return this.EOF;
-        }
-        if (!this._input) this.done = true;
+next() {
+    if (this.done) {
+        return this.EOF;
+    }
+    if (!this._input) this.done = true;
 
-        var token,
-            match,
-            col,
-            lines;
-        if (!this._more) {
-            this.yytext = '';
-            this.match = '';
+    var token;
+    var match;
+    var col;
+    var lines;
+    if (!this._more) {
+        this.yytext = '';
+        this.match = '';
+    }
+    var rules = this._currentRules();
+    for (var i=0;i < rules.length; i++) {
+        match = this._input.match(this.rules[rules[i]]);
+        if (match) {
+            lines = match[0].match(/\n.*/g);
+            if (lines) this.yylineno += lines.length;
+            this.yylloc = {first_line: this.yylloc.last_line,
+                           last_line: this.yylineno+1,
+                           first_column: this.yylloc.last_column,
+                           last_column: lines ? lines[lines.length-1].length-1 : this.yylloc.last_column + match[0].length}
+            this.yytext += match[0];
+            this.match += match[0];
+            this.matches = match;
+            this.yyleng = this.yytext.length;
+            this._more = false;
+            this._input = this._input.slice(match[0].length);
+            this.matched += match[0];
+            token = this.performAction.call(this, this.yy, this, rules[i],this.conditionStack[this.conditionStack.length-1]);
+            if (token) return token;
+            else return;
         }
-        var rules = this._currentRules();
-        for (var i=0;i < rules.length; i++) {
-            match = this._input.match(this.rules[rules[i]]);
-            if (match) {
-                lines = match[0].match(/\n.*/g);
-                if (lines) this.yylineno += lines.length;
-                this.yylloc = {first_line: this.yylloc.last_line,
-                               last_line: this.yylineno+1,
-                               first_column: this.yylloc.last_column,
-                               last_column: lines ? lines[lines.length-1].length-1 : this.yylloc.last_column + match[0].length}
-                this.yytext += match[0];
-                this.match += match[0];
-                this.matches = match;
-                this.yyleng = this.yytext.length;
-                this._more = false;
-                this._input = this._input.slice(match[0].length);
-                this.matched += match[0];
-                token = this.performAction.call(this, this.yy, this, rules[i],this.conditionStack[this.conditionStack.length-1]);
-                if (token) return token;
-                else return;
-            }
-        }
-        if (this._input === "") {
-            return this.EOF;
-        } else {
-            this.parseError('Lexical error on line '+(this.yylineno+1)+'. Unrecognized text.\n'+this.showPosition(), 
-                    {text: "", token: null, line: this.yylineno});
-        }
-    },
+    }
+    if (this._input === "") {
+        return this.EOF;
+    } else {
+        this.parseError('Lexical error on line '+(this.yylineno+1)+'. Unrecognized text.\n'+this.showPosition(), 
+                {text: "", token: null, line: this.yylineno});
+    }
+},
 lex:function lex() {
         var r = this.next();
         if (typeof r !== 'undefined') {
@@ -313,7 +333,7 @@ popState:function popState() {
 _currentRules:function _currentRules() {
         return this.conditions[this.conditionStack[this.conditionStack.length-1]].rules;
     },
-topState:function () {
+topState() {
         return this.conditionStack[this.conditionStack.length-2];
     },
 pushState:function begin(condition) {
@@ -376,13 +396,13 @@ break;
 }
 };
 lexer.rules = [/^\s+/,/^\/\/[^\n]*/,/^(?:[0]|(?:[1-9][0-9]*(\.[0-9]+)?))/,/^"(?:\\["bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/,/^false\b/,/^true\b/,/^null\b/,/^this\b/,/^return\b/,/^let\b/,/^[a-zA-Z_]+/,/^\+/,/^~/,/^!/,/^=/,/^\[/,/^\]/,/^\./,/^,/,/^\(/,/^\)/,/^\{/,/^\}/,/^;/,/^$/];
-lexer.conditions = {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],"inclusive":true}};return lexer;})()
+lexer.conditions = {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],"inclusive":true}};return lexer;}))()
 parser.lexer = lexer;
 return parser;
-})();
+}))();
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 exports.parser = pre;
-exports.parse = function () { return pre.parse.apply(pre, arguments); }
+exports.parse = function(...args) { return pre.parse(...args); }
 exports.main = function commonjsMain(args) {
     if (!args[1])
         throw new Error('Usage: '+args[0]+' FILE');

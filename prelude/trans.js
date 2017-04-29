@@ -1,6 +1,6 @@
-var ir = require('./ir'),
-    Env = require('./env'),
-    Macro = require('./macro');
+var ir = require('./ir');
+var Env = require('./env');
+var Macro = require('./macro');
 
 function Translator() {
     this._env = new Env();
@@ -72,9 +72,11 @@ Translator.prototype.string = function string(node, context) {
         return this.expr(found, context);
 
     var split = [].slice.call(node.value);
-    return this.cat([].slice.call(node.value).map(function(ch) {
-        return { tag: 'string', source: ch, value: ch };
-    }));
+    return this.cat([].slice.call(node.value).map(ch => ({
+        tag: 'string',
+        source: ch,
+        value: ch
+    })));
 };
 
 Translator.prototype.plus = function plus(left, right) {
