@@ -1,5 +1,5 @@
 function Plus(left, right) {
-    return { tag: 'plus', left: left, right: right, type: 'number' };
+    return { tag: 'plus', left, right, type: 'number' };
 }
 
 function isStringish(elt) {
@@ -10,7 +10,7 @@ function Cat(elts) {
     if (!isStringish(elts[0]) && (elts.length < 2 || !isStringish(elts[1])))
         elts.splice(1, 0, Array());
 
-    return { tag: 'cat', elts: elts, type: 'string' };
+    return { tag: 'cat', elts, type: 'string' };
 }
 
 function unaryType(op) {
@@ -25,7 +25,7 @@ function unaryType(op) {
 }
 
 function Unary(op, arg) {
-    return { tag: 'unary', op: op, arg: arg, type: unaryType(op) };
+    return { tag: 'unary', op, arg, type: unaryType(op) };
 }
 
 function Array(arg) {
@@ -33,11 +33,11 @@ function Array(arg) {
 }
 
 function Call(fun, args) {
-    return { tag: 'call', fun: fun, args: args, type: 'any' };
+    return { tag: 'call', fun, args, type: 'any' };
 }
 
 function Lookup(obj, prop) {
-    return { tag: 'lookup', obj: obj, prop: prop, type: 'any' };
+    return { tag: 'lookup', obj, prop, type: 'any' };
 }
 
 exports.Plus = Plus;

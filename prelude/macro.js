@@ -1,6 +1,6 @@
 function Macro(name, formals, body, env) {
     this._name = name;
-    this._formals = formals.map(function(f) { return f.value });
+    this._formals = formals.map(f => f.value);
     this._body = body;
     this._env = env;
 }
@@ -17,9 +17,7 @@ Macro.prototype.expand = function(actuals) {
 
 function subst(node, formals, actuals) {
     if (Array.isArray(node)) {
-        return node.map(function(subnode) {
-            return subst(subnode, formals, actuals);
-        });
+        return node.map(subnode => subst(subnode, formals, actuals));
     }
 
     if (typeof node !== 'object' || node === null)

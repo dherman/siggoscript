@@ -1,6 +1,6 @@
-var parser = require('./parser'),
-    Translator = require('./trans'),
-    emit = require('./emit');
+var parser = require('./parser');
+var Translator = require('./trans');
+var emit = require('./emit');
 
 function StatementWriter(out) {
     this._out = out;
@@ -33,7 +33,7 @@ function compile(source, out) {
 
     out = new StatementWriter(out);
 
-    ast.forEach(function(node) {
+    ast.forEach(node => {
         try {
             node = translator.stmt(node);
         } catch (e) {
